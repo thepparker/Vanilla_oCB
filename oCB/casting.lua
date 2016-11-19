@@ -12,7 +12,6 @@ local roman = {
 -- dontRegister is passed by custom clients if they need to call Stop/Failed/Delayed manually
 function oCB:SpellStart(s, d, dIsInSeconds, dontRegister)
 	self:Debug(string.format("SpellStart - %s | %s (%s)%s", s, d, dIsInSeconds and "s" or "ms", dontRegister and " | Not Registering" or ""))
-    
 	if s == "" then
 		s = (getglobal("GameTooltipTextLeft1"):GetText() or "")
 	end
@@ -68,8 +67,10 @@ function oCB:SpellStart(s, d, dIsInSeconds, dontRegister)
 	self.frames.CastingBar.Time:SetText("")
 	self.frames.CastingBar.Delay:SetText("")
 	
-	if oCBCastSent then
-		local mylatency = math.floor((GetTime()-oCBCastSent)*1000)
+	if true then
+		--local mylatency = math.floor((GetTime()-oCBCastSent)*1000)
+
+		local _, _, mylatency = GetNetStats()
 		local w = math.floor(self.frames.CastingBar.Bar:GetWidth())
 		mylatency = mylatency
 		self.frames.CastingBar.Latency:SetText(mylatency.."ms")
@@ -139,7 +140,7 @@ end
 
 -- Arg is for custom clients
 function oCB:SpellStop(dontUnregister)
-	self:Debug("SpellStop - Stopping cast")		
+	self:Debug("SpellStop - Stopping cast")
 	local c = self.db.profile.Colors.Complete
 	
 	self.frames.CastingBar.Bar:SetValue(self.maxValue or 0)
@@ -156,7 +157,7 @@ function oCB:SpellStop(dontUnregister)
 	self.casting 		= nil
 	self.fadeOut 	= 1
 	
-	oCBCastSent = nil
+	--oCBCastSent = nil
 	
     if not dontUnregister then
         self:UnregisterEvent("SPELLCAST_STOP")
